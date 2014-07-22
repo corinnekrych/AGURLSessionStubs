@@ -45,7 +45,7 @@ class StubURLProtocol: NSURLProtocol {
         let client: NSURLProtocolClient = self.client;
 
         let responseStub: StubResponse = self.stubDescr.responseBlock(request)
-        
+
         let urlResponse = NSHTTPURLResponse(URL: request.URL, statusCode: responseStub.statusCode, HTTPVersion: "HTTP/1.1", headerFields: responseStub.headers)
         
         // TODO

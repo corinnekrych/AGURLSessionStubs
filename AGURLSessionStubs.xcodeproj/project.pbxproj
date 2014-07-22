@@ -23,6 +23,20 @@
 			remoteGlobalIDString = 6F3C40A0197BCCD80072D66A;
 			remoteInfo = AGURLSessionStubs;
 		};
+		6F3F9097197DB021003A24E1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6F3C4098197BCCD80072D66A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6F3C40A0197BCCD80072D66A;
+			remoteInfo = AGURLSessionStubs;
+		};
+		6F3F9099197DB021003A24E1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6F3C4098197BCCD80072D66A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6F3C40A0197BCCD80072D66A;
+			remoteInfo = AGURLSessionStubs;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -155,6 +169,8 @@
 			);
 			dependencies = (
 				6F3C40AF197BCCD80072D66A /* PBXTargetDependency */,
+				6F3F9098197DB021003A24E1 /* PBXTargetDependency */,
+				6F3F909A197DB021003A24E1 /* PBXTargetDependency */,
 			);
 			name = AGURLSessionStubsTests;
 			productName = AGURLSessionStubsTests;
@@ -240,6 +256,16 @@
 			isa = PBXTargetDependency;
 			target = 6F3C40A0197BCCD80072D66A /* AGURLSessionStubs */;
 			targetProxy = 6F3C40AE197BCCD80072D66A /* PBXContainerItemProxy */;
+		};
+		6F3F9098197DB021003A24E1 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6F3C40A0197BCCD80072D66A /* AGURLSessionStubs */;
+			targetProxy = 6F3F9097197DB021003A24E1 /* PBXContainerItemProxy */;
+		};
+		6F3F909A197DB021003A24E1 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6F3C40A0197BCCD80072D66A /* AGURLSessionStubs */;
+			targetProxy = 6F3F9099197DB021003A24E1 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -411,6 +437,7 @@
 				6F3C40B9197BCCD80072D66A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		6F3C40BA197BCCD80072D66A /* Build configuration list for PBXNativeTarget "AGURLSessionStubsTests" */ = {
 			isa = XCConfigurationList;
@@ -419,6 +446,7 @@
 				6F3C40BC197BCCD80072D66A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

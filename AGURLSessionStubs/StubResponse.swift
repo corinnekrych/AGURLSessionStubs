@@ -17,7 +17,7 @@
 
 import Foundation
 
-class StubResponse {
+public class StubResponse {
     
     let headers: Dictionary<String, String>
     let statusCode: Int
@@ -26,7 +26,7 @@ class StubResponse {
     let requestTime: NSTimeInterval  = 0.0
     let responseTime: NSTimeInterval = 0.0
     
-    init(data: NSData, statusCode: Int, headers: Dictionary<String, String>) {
+    public init(data: NSData, statusCode: Int, headers: Dictionary<String, String>) {
         self.data = data
         self.statusCode = statusCode
         self.headers = headers

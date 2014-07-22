@@ -17,12 +17,12 @@
 
 import Foundation
 
-typealias StubTestBlock = (NSURLRequest) -> Bool
-typealias StubResponseBlock = (NSURLRequest) -> StubResponse
+public typealias StubTestBlock = (NSURLRequest) -> Bool
+public typealias StubResponseBlock = (NSURLRequest) -> StubResponse
 
-class StubsManager {
+public class StubsManager {
     
-    var stubDescriptors = [StubDescriptor]();
+    private(set) var stubDescriptors = [StubDescriptor]()
     
     // holds the singleton StubManager
     class var sharedManager: StubsManager {
@@ -40,27 +40,29 @@ class StubsManager {
         Utils.swizzleFromSelector("ephemeralSessionConfiguration", toSelector: "swizzle_ephemeralSessionConfiguration", forClass: NSURLSessionConfiguration.classForCoder())
     }
     
-    class func stubRequestsPassingTest(testBlock: StubTestBlock, withStubResponse responseBlock: StubResponseBlock) {
+    public class func stubRequestsPassingTest(testBlock: StubTestBlock, withStubResponse responseBlock: StubResponseBlock) -> StubDescriptor {
         let stubDesc = StubDescriptor(testBlock: testBlock, responseBlock: responseBlock)
         
         StubsManager.sharedManager.stubDescriptors += stubDesc
+        
+        return stubDesc
     }
     
-    class func addStub(stubDescr: StubDescriptor) {
+    public class func addStub(stubDescr: StubDescriptor) {
         StubsManager.sharedManager.stubDescriptors += stubDescr
     }
     
-    class func removeStub(stubDescr: StubDescriptor) {
+    public class func removeStub(stubDescr: StubDescriptor) {
         if let index = find(StubsManager.sharedManager.stubDescriptors, stubDescr) {
             StubsManager.sharedManager.stubDescriptors.removeAtIndex(index)
         }
     }
     
-    class func removeLastStub() {
+    public class func removeLastStub() {
         StubsManager.sharedManager.stubDescriptors.removeLast()
     }
     
-    class func removeAllStubs() {
+    public class func removeAllStubs() {
         StubsManager.sharedManager.stubDescriptors.removeAll(keepCapacity: false)
     }
     
@@ -79,7 +81,7 @@ class StubsManager {
     }
 }
 
-class StubDescriptor: Equatable {
+public class StubDescriptor: Equatable {
     
     let testBlock: StubTestBlock
     let responseBlock: StubResponseBlock
@@ -90,15 +92,15 @@ class StubDescriptor: Equatable {
     }
 }
 
-@infix func ==(lhs: StubDescriptor, rhs: StubDescriptor) -> Bool {
+@infix public func ==(lhs: StubDescriptor, rhs: StubDescriptor) -> Bool {
     // identify check
     return lhs === rhs
 }
 
 
-class Utils {
+private class Utils {
     
-    class func swizzleFromSelector(selector: CString!, toSelector: CString!, forClass:AnyClass!) {
+    private class func swizzleFromSelector(selector: String!, toSelector: String!, forClass:AnyClass!) {
         
         var originalMethod = class_getClassMethod(forClass, Selector.convertFromStringLiteral(selector))
         var swizzledMethod = class_getClassMethod(forClass, Selector.convertFromStringLiteral(toSelector))
