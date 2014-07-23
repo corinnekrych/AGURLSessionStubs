@@ -19,6 +19,7 @@ import Foundation
 
 class StubURLProtocol: NSURLProtocol {
     
+    var stopped = false
     let stubDescr: StubDescriptor
 
     override class func canInitWithRequest(request: NSURLRequest!) -> Bool {
@@ -63,16 +64,24 @@ class StubURLProtocol: NSURLProtocol {
             let redirectRequest = NSURLRequest(URL: redirectLocationURL)
             
             execute_after(responseStub.requestTime) {
-                client.URLProtocol(self, wasRedirectedToRequest: redirectRequest, redirectResponse: urlResponse)
+                if (!self.stopped) {
+                    client.URLProtocol(self, wasRedirectedToRequest: redirectRequest, redirectResponse: urlResponse)
+                }
             }
             
         } else { // normal response
             execute_after(responseStub.requestTime) {
-                client.URLProtocol(self, didReceiveResponse: urlResponse, cacheStoragePolicy: NSURLCacheStoragePolicy.NotAllowed)
-                client.URLProtocol(self, didLoadData: responseStub.data)
-                client.URLProtocolDidFinishLoading(self)
+                if (!self.stopped) {
+                    client.URLProtocol(self, didReceiveResponse: urlResponse, cacheStoragePolicy: NSURLCacheStoragePolicy.NotAllowed)
+                    client.URLProtocol(self, didLoadData: responseStub.data)
+                    client.URLProtocolDidFinishLoading(self)
+                }
             }
         }
+    }
+    
+    override func stopLoading() {
+        stopped = true
     }
     
     func execute_after(delayInSeconds: NSTimeInterval, block: dispatch_block_t) {

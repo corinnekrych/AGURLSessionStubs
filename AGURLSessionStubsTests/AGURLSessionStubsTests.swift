@@ -59,7 +59,6 @@ class AGURLSessionStubsTests: XCTestCase {
         waitForExpectationsWithTimeout(10, handler: nil)
     }
 
-    /*
     func testStubWithNSURLSessionEphemeralConfiguration() {
         // set up http stub
         StubsManager.stubRequestsPassingTest({ (request: NSURLRequest!) -> Bool in
@@ -87,5 +86,4 @@ class AGURLSessionStubsTests: XCTestCase {
         
         waitForExpectationsWithTimeout(10, handler: nil)
     }
-    */
 }

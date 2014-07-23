@@ -116,13 +116,12 @@ extension NSURLSessionConfiguration {
         
         var result = [AnyObject]()
         
-        /*
         for proto in config.protocolClasses {
             result += proto
         }
-        */
+
         // add our stub
-        result += StubURLProtocol.classForCoder()
+        result.insert(StubURLProtocol.classForCoder(), atIndex: 0)
         config.protocolClasses = result
         
         return config
@@ -133,13 +132,12 @@ extension NSURLSessionConfiguration {
         
         var result = [AnyObject]()
         
-        /*
         for proto in config.protocolClasses {
             result += proto
         }
-        */
+
         // add our stub
-        result += StubURLProtocol.classForCoder()
+        result.insert(StubURLProtocol.classForCoder(), atIndex: 0)
         config.protocolClasses = result
         
         return config
