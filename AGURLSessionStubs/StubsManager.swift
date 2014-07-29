@@ -112,6 +112,7 @@ private class Utils {
 extension NSURLSessionConfiguration {
     
     class func swizzle_defaultSessionConfiguration() -> NSURLSessionConfiguration! {
+        // as we've swap method, calling swizzled one here will call original one
         let config = swizzle_defaultSessionConfiguration()
         
         var result = [AnyObject]()

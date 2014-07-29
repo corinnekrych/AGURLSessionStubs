@@ -58,7 +58,35 @@ class AGURLSessionStubsTests: XCTestCase {
         
         waitForExpectationsWithTimeout(10, handler: nil)
     }
-
+    
+    func testStubWithNSURLSessionDefaultConfigurationAndFalseRequestCondition() {
+        // set up http stub
+        var isMocked = false
+        StubsManager.stubRequestsPassingTest({ (request: NSURLRequest!) -> Bool in
+            return false
+            }, withStubResponse:( { (request: NSURLRequest!) -> StubResponse in
+                isMocked = true
+                return StubResponse(data:NSData.data(), statusCode: 200, headers: ["Content-Type" : "text/json"])
+                }))
+        
+        // async test expectation
+        let expectation = expectationWithDescription("testStubWithNSURLSessionDefaultConfiguration");
+        
+        let request = NSMutableURLRequest(URL: NSURL(string: "http://server.com"))
+        
+        let config = NSURLSessionConfiguration.defaultSessionConfiguration()
+        let session = NSURLSession(configuration: config)
+        
+        let task = session.dataTaskWithRequest(request) {(data, response, error) in
+            XCTAssertFalse(isMocked, "not mocked")
+            expectation.fulfill()
+        }
+        
+        task.resume()
+        
+        waitForExpectationsWithTimeout(10, handler: nil)
+    }
+    
     func testStubWithNSURLSessionEphemeralConfiguration() {
         // set up http stub
         StubsManager.stubRequestsPassingTest({ (request: NSURLRequest!) -> Bool in
