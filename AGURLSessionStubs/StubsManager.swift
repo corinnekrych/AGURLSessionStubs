@@ -20,6 +20,10 @@ import Foundation
 public typealias StubTestBlock = (NSURLRequest) -> Bool
 public typealias StubResponseBlock = (NSURLRequest) -> StubResponse
 
+
+var __defaultConfiguration : ()->NSURLSessionConfiguration! = NSURLSessionConfiguration.defaultSessionConfiguration
+var config = NSURLSessionConfiguration.defaultSessionConfiguration()
+
 public class StubsManager {
     
     private(set) var stubDescriptors = [StubDescriptor]()
@@ -35,7 +39,8 @@ public class StubsManager {
     }
     
     init() {
-        Utils.swizzleFromSelector("defaultSessionConfiguration", toSelector: "swizzle_defaultSessionConfiguration", forClass: NSURLSessionConfiguration.classForCoder())
+        Utils.swizzleDefaultConfiguration()
+        //Utils.swizzleFromSelector("defaultSessionConfiguration", toSelector: "swizzle_defaultSessionConfiguration", forClass: NSURLSessionConfiguration.classForCoder())
         
         Utils.swizzleFromSelector("ephemeralSessionConfiguration", toSelector: "swizzle_ephemeralSessionConfiguration", forClass: NSURLSessionConfiguration.classForCoder())
     }
@@ -107,23 +112,39 @@ private class Utils {
         
         method_exchangeImplementations(originalMethod, swizzledMethod)
     }
+    private class func swizzleDefaultConfiguration() {
+        println(":::::::::::::::::::::::")
+        NSURLSessionConfiguration._defaultConfiguration = NSURLSessionConfiguration.swizzle_defaultSessionConfiguration
+    }
 }
 
+
+
 extension NSURLSessionConfiguration {
+    public class var _defaultConfiguration : ()->NSURLSessionConfiguration! {
+        get { return __defaultConfiguration }
+        set (swizzle) {__defaultConfiguration = swizzle} }
+
+    class func defaultSessionConfiguration() -> NSURLSessionConfiguration! {
+        return _defaultConfiguration()
+    }
+   
     
     class func swizzle_defaultSessionConfiguration() -> NSURLSessionConfiguration! {
-        let config = swizzle_defaultSessionConfiguration()
-        
+        println(":::::::::::::::inside swizzle_defaultSessionConfiguration")
+        //let config = NSURLSessionConfiguration()
+        println(":::::::::::::::inside swizzle_defaultSessionConfiguration")
         var result = [AnyObject]()
         
-        for proto in config.protocolClasses {
+        if let prototcols = config.protocolClasses {
+        for proto in prototcols {
             result += proto
         }
-
+        }
         // add our stub
         result.insert(StubURLProtocol.classForCoder(), atIndex: 0)
         config.protocolClasses = result
-        
+        println(":::::::::::::::\(config.protocolClasses)")
         return config
     }
     

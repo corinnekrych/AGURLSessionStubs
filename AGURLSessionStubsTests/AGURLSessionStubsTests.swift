@@ -33,9 +33,11 @@ class AGURLSessionStubsTests: XCTestCase {
     
     func testStubWithNSURLSessionDefaultConfiguration() {
         // set up http stub
+        var isMocked:Bool = false
         StubsManager.stubRequestsPassingTest({ (request: NSURLRequest!) -> Bool in
             return true
         }, withStubResponse:( { (request: NSURLRequest!) -> StubResponse in
+            isMocked = true
             return StubResponse(data:NSData.data(), statusCode: 200, headers: ["Content-Type" : "text/json"])
         }))
         
@@ -48,6 +50,7 @@ class AGURLSessionStubsTests: XCTestCase {
         let session = NSURLSession(configuration: config)
         
         let task = session.dataTaskWithRequest(request) {(data, response, error) in
+            XCTAssertTrue(isMocked, "Should have entered mocked block")
             XCTAssertNil(error, "unexpected error")
             XCTAssertNotNil(data, "response should contain data")
             
