@@ -30,7 +30,7 @@ class StubURLProtocol: NSURLProtocol {
         return StubsManager.sharedManager.firstStubPassingTestForRequest(task.currentRequest) != nil
     }
 
-    init(request: NSURLRequest!, cachedResponse: NSCachedURLResponse!, client: NSURLProtocolClient!) {
+    override init(request: NSURLRequest!, cachedResponse: NSCachedURLResponse!, client: NSURLProtocolClient!) {
         stubDescr = StubsManager.sharedManager.firstStubPassingTestForRequest(request)!
         
         // ensure no cache response is used
@@ -60,7 +60,7 @@ class StubURLProtocol: NSURLProtocol {
             redirectLocationURL = NSURL.URLWithString(redirectLocation)
         }
         
-        if (responseStub.statusCode >= 300 && responseStub.statusCode < 400) && redirectLocationURL {
+        if (responseStub.statusCode >= 300 && responseStub.statusCode < 400) && redirectLocationURL != nil {
             let redirectRequest = NSURLRequest(URL: redirectLocationURL)
             
             execute_after(responseStub.requestTime) {

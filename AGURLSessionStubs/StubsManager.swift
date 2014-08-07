@@ -16,7 +16,7 @@
 */
 
 import Foundation
-
+public typealias ConfigFunction = () -> NSURLSessionConfiguration!
 public typealias StubTestBlock = (NSURLRequest) -> Bool
 public typealias StubResponseBlock = (NSURLRequest) -> StubResponse
 
@@ -43,13 +43,13 @@ public class StubsManager {
     public class func stubRequestsPassingTest(testBlock: StubTestBlock, withStubResponse responseBlock: StubResponseBlock) -> StubDescriptor {
         let stubDesc = StubDescriptor(testBlock: testBlock, responseBlock: responseBlock)
         
-        StubsManager.sharedManager.stubDescriptors += stubDesc
+        StubsManager.sharedManager.stubDescriptors += [stubDesc]
         
         return stubDesc
     }
     
     public class func addStub(stubDescr: StubDescriptor) {
-        StubsManager.sharedManager.stubDescriptors += stubDescr
+        StubsManager.sharedManager.stubDescriptors += [stubDescr]
     }
     
     public class func removeStub(stubDescr: StubDescriptor) {
@@ -92,7 +92,7 @@ public class StubDescriptor: Equatable {
     }
 }
 
-@infix public func ==(lhs: StubDescriptor, rhs: StubDescriptor) -> Bool {
+public func ==(lhs: StubDescriptor, rhs: StubDescriptor) -> Bool {
     // identify check
     return lhs === rhs
 }
@@ -103,22 +103,28 @@ private class Utils {
     private class func swizzleFromSelector(selector: String!, toSelector: String!, forClass:AnyClass!) {
         
         var originalMethod = class_getClassMethod(forClass, Selector.convertFromStringLiteral(selector))
-        var swizzledMethod = class_getClassMethod(forClass, Selector.convertFromStringLiteral(toSelector))
+        var originalMethodImplementation:IMP = method_getImplementation(originalMethod);
         
-        method_exchangeImplementations(originalMethod, swizzledMethod)
+        var swizzledMethod = class_getClassMethod(forClass, Selector.convertFromStringLiteral(toSelector))
+        var swizzledMethodImplementation:IMP = method_getImplementation(swizzledMethod);
+        
+        method_setImplementation(originalMethod, swizzledMethodImplementation)
+        method_setImplementation(swizzledMethod, originalMethodImplementation)
+        //method_exchangeImplementations(originalMethod, swizzledMethod)
     }
 }
 
 extension NSURLSessionConfiguration {
     
     class func swizzle_defaultSessionConfiguration() -> NSURLSessionConfiguration! {
+        println("inside swizzle")
         // as we've swap method, calling swizzled one here will call original one
-        let config = swizzle_defaultSessionConfiguration()
+        var config = swizzle_defaultSessionConfiguration()
         
         var result = [AnyObject]()
         
         for proto in config.protocolClasses {
-            result += proto
+            result += [proto]
         }
 
         // add our stub
@@ -134,7 +140,7 @@ extension NSURLSessionConfiguration {
         var result = [AnyObject]()
         
         for proto in config.protocolClasses {
-            result += proto
+            result += [proto]
         }
 
         // add our stub
